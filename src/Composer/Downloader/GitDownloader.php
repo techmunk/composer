@@ -96,11 +96,12 @@ class GitDownloader extends VcsDownloader
             return;
         }
 
-        $command = 'git status --porcelain --untracked-files=no';
+        $command = 'git status --porcelain --untracked-files=no --branch';
         if (0 !== $this->process->execute($command, $output, $path)) {
             throw new \RuntimeException('Failed to execute ' . $command . "\n\n" . $this->process->getErrorOutput());
         }
 
+        $output = preg_replace('/^## [^ \n]*($| \[behind [0-9]+\])$/', '', $output);
         return trim($output) ?: null;
     }
 
